@@ -11,7 +11,9 @@ public class HomeController(ILogger<HomeController> logger) : Controller
 
     public IActionResult Index()
     {
-        return View();
+        AQLBuilder builder = new AQLBuilder();
+        var model = builder.BuildQuery();
+        return View(model);
     }
 
     public IActionResult Privacy()
@@ -28,7 +30,13 @@ public class HomeController(ILogger<HomeController> logger) : Controller
     [HttpPost(Name = "add")]
     public IActionResult PostVitals(VitalsModel model)
     {
-        Console.WriteLine(model.ToString());
+        CompositionBuilder builder = new CompositionBuilder();
+        if (builder.BuildComposition(model))
+        {
+            builder.GetCompositionResponse();
+            return View("Index", new VitalsListModel(){isPost = true});
+        }
+        
         return View("Index");
     }
 }

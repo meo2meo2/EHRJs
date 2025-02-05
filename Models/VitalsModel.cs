@@ -2,9 +2,12 @@ namespace EHRJs.Models;
 
 public class VitalsModel
 {
-    public required string ehrID { get; set; }
-    public required double Weight { get; set; }
-    public required double Height { get; set; }
-    public required string BloodPressure { get; set; }
-    public required double Spo2 { get; set; }
+    public string BloodPressure { get; set; }
+    public string Time { get; set; }
+    public string Uid { get; set; }
+    public double Systolic { get; set; }
+    public double Diastolic { get; set; }
+    public double Height { get; set; }
+    public double Weight { get; set; }
+    public double Spo2 { get; set; }
 }

@@ -39,6 +39,6 @@ public class AQLBuilder
         request.AddBody(contents);
         RestResponse response = client.Execute(request);
         var TemplateContent = response.Content.ToString();
-        return new VitalsListModel() { vitals = AQLUtils.GetVitalRecords(TemplateContent), isPost = false};
+        return new VitalsListModel() { vitals = AQLUtils.GetVitalRecords(TemplateContent), isPost = false, isError = false, isSuccess = false, ErrorMessage = "", SuccessMessage = ""};
     }
 }

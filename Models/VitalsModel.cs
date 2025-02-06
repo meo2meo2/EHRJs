@@ -10,4 +10,8 @@ public class VitalsModel
     public double Height { get; set; }
     public double Weight { get; set; }
     public double Spo2 { get; set; }
+    public bool isError { get; set; }
+    public string ErrorMessage { get; set; }
+    public bool isSuccess { get; set; }
+    public string SuccessMessage { get; set; }
 }

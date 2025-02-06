@@ -1,19 +1,35 @@
 ﻿@{
     ViewData["Title"] = "Vitals Sign Page";
-   @model VitalsListModel;  
+    @using Microsoft.AspNetCore.Mvc.RazorPages
+@model VitalsListModel;  
 }
 
+
 <div class="container">
+    @if (Model.isError)
+    {
+        <div class="alert alert-danger" role="alert">
+            @Model.ErrorMessage
+        </div>
+    }
+    else if (Model.isSuccess)
+    {
+        <div class="alert alert-info" role="alert">
+            @Model.SuccessMessage
+        </div>
+    }
+
     <div class="row">
         <div class="col-sm-5">
             <h2 class="bg-info">Vitals Form</h2>
-        @using (Html.BeginForm("PostVitals", "Home", FormMethod.Post))
+            @using (Html.BeginForm("PostVitals", "Home", FormMethod.Post))
             {
                 <form method="post" class="needs-validation">
                     <div class="form-group mb-3">
                         <label for="height" class="form-label">Patient ID</label>
                         <div class="input-group">
-                            <input type="text" id="patientId" name="patientId" placeholder="154ec7af-8dfa-45b9-a29c-dd6f10a862f9" class="form-control"/>
+                            <input type="text" id="patientId" name="patientId"
+                                   placeholder="154ec7af-8dfa-45b9-a29c-dd6f10a862f9" class="form-control"/>
                         </div>
                     </div>
                     <div class="form-group mb-3">
@@ -22,7 +38,7 @@
                             <input type="number" id="height" name="height" class="form-control" min="100"
                                    max="300" required step="1"
                                    placeholder="Enter height"/>
-                            <span class="input-group-text" id="heightSuffix">CM</span>
+                            <span class="input-group-text" id="heightSuffix">Cm</span>
                         </div>
                     </div>
 
@@ -62,7 +78,9 @@
                         <div class="form-text">Normal range: 95-100%</div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" formaction="@Url.Action("PostVitals")" formmethod="post" >Submit</button>
+                    <button type="submit" class="btn btn-primary" formaction="@Url.Action("PostVitals")"
+                            formmethod="post">Submit
+                    </button>
                 </form>
             }
         </div>
@@ -72,29 +90,39 @@
                 <tr>
                     <th scope="col" class="fit">#</th>
                     <th scope="col" class="fit">EHR-ID</th>
-                    <th scope="col" class="fit">Height</th> 
+                    <th scope="col" class="fit">Height</th>
                     <th scope="col" class="fit">Weight</th>
                     <th scope="col" class="fit">Blood Pressure</th>
                     <th scope="col" class="fit">SPO2</th>
                 </tr>
                 </thead>
-               
+
                 <tbody>
                 @if (Model.vitals != null)
                 {
                     int i = 1;
-                    foreach (var VitalRecord in Model.vitals)
+                    foreach (var vitalRecord in Model.vitals)
                     {
                         <tr>
                             <th scope="row" class="fit">@(i++)</th>
-                            <td class="fit">@VitalRecord.Uid</td>
-                            <td class="fit"> @string.Concat( @VitalRecord.Height.ToString()," Cm")</td>
-                            <td class="fit">@string.Concat(@VitalRecord.Weight.ToString() , " Kg")</td>
-                            <td class="fit"> @string.Concat(@VitalRecord.Systolic.ToString() , "/", @VitalRecord.Diastolic.ToString())</td>
-                            <td class="fit"> @string.Concat(@VitalRecord.Spo2.ToString() , "%")</td>
+                            <td class="fit">
+                                @Html.ActionLink("Delete", "DeleteVitals", "Home", new { id = vitalRecord.Uid })
+                                <a data-id="@vitalRecord.Uid"
+                                   data-weight="@vitalRecord.Weight"
+                                   data-height="@vitalRecord.Height"
+                                   data-spo2="@vitalRecord.Spo2"
+                                   data-systolic="@vitalRecord.Systolic"
+                                   data-diastolic="@vitalRecord.Diastolic"
+                                   title="Edit" class="my-class" href="#">Edit</a>
+
+                            </td>
+
+                            <td class="fit"> @string.Concat(vitalRecord.Height.ToString(), " Cm")</td>
+                            <td class="fit">@string.Concat(vitalRecord.Weight.ToString(), " Kg")</td>
+                            <td class="fit"> @string.Concat(vitalRecord.Systolic.ToString(), "/", vitalRecord.Diastolic.ToString())</td>
+                            <td class="fit"> @string.Concat(vitalRecord.Spo2.ToString(), "%")</td>
                         </tr>
                     }
-                   
                 }
                 else
                 {
@@ -107,8 +135,107 @@
         </div>
     </div>
 </div>
-<script>
-    function sendform (){
-        alert("hello");
-    }
-</script>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog d-flex justify-content-center">
+        <div class="modal-content w-75">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Vitals Update</h5>
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn-close"
+                        data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form class="needs-validation">
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="uuid">ID</label>
+                        <input type="text" id="uuid" class="form-control" readonly/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="height-update">Height</label>
+                        <input type="number" min="100" max="300" id="height-update" class="form-control"/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="weight-update">Weight</label>
+                        <input type="number" min="40" max="400" id="weight-update" class="form-control"/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="systolic-update">Systolic</label>
+                        <input type="text" id="systolic-update" class="form-control"/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="diastolic-update">Diastolic</label>
+                        <input type="text" id="diastolic-update" class="form-control"/>
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="spo2-update">SPO2</label>
+                        <input type="number" min="0"
+                               max="100" id="spo2-update" class="form-control"/>
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block"
+                            id="update">Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+@section Scripts
+{
+    <script>
+        $('.my-class').click(function (e) {
+            e.preventDefault();
+            $('#uuid').val($(this).data('id'));
+            $('#height-update').val($(this).data('height'));
+            $('#weight-update').val($(this).data('weight'));
+            $('#spo2-update').val($(this).data('spo2'));
+            $('#systolic-update').val($(this).data('systolic'));
+            $('#diastolic-update').val($(this).data('diastolic'));
+            $("#staticBackdrop2").modal('toggle');
+        });
+
+        $('#update').click(function (e) {
+
+            e.preventDefault();
+            let formData = {
+                uid: $('#uuid').val(),
+                height: $('#height-update').val(),
+                weight: $('#weight-update').val(),
+                spo2: $('#spo2-update').val(),
+                systolic: $('#systolic-update').val(),
+                diastolic:  $('#diastolic-update').val(),
+                bloodPressure : $('#systolic-update').val() + "/" + $('#diastolic-update').val()
+            
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateVitals", "Home")',
+                data:formData,
+                success: function (result) {
+                    console.log(result);
+                    $(".btn-close").click();
+                    window.location.reload();
+
+                }
+            });
+
+        });
+
+        $(".btn-close").click(function () {
+            $('#uuid').val("");
+            $('#height-update').val("");
+            $('#weight-update').val("");
+            $('#spo2-update').val("");
+            $('#systolic-update').val("");
+            $('#diastolic-update').val("");
+            $("#staticBackdrop2").modal('toggle');
+        });
+    </script>
+}

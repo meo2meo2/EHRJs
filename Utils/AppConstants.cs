@@ -20,10 +20,16 @@ public class AppConstants
     
     public static readonly string BaseUrl = @"https://openehr-bootcamp.medblocks.com";
     public static readonly string OpenEhrBaseCompositionPost = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition";
+    public static readonly string OpenEhrBaseCompositionDelete = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition/{{composition_id}}";
+    public static readonly string OpenEhrBaseCompositionUpdate = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition/{{composition_id}}";
+
     public static readonly string OpenEhrBaseUrl = @"/ehrbase/rest/openehr/v1/definition/template/adl1.4/";
     
     public static readonly string BaseUrlLocal = @"http://localhost:8080";
     public static readonly string OpenEhrBaseCompositionPostLocal = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition";
+    public static readonly string OpenEhrBaseCompositionDeleteLocal = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition/{{composition_id}}";
+    public static readonly string OpenEhrBaseCompositionUpdateLocal = @"/ehrbase/rest/openehr/v1/ehr/{{ehrId}}/composition/{{composition_id}}";
+
     public static readonly string OpenEhrBaseUrlLocal = @"/ehrbase/rest/openehr/v1/definition/template/adl1.4/";
     
     public static readonly string OpenEhrBaseQueryPostLocal = @"/ehrbase/rest/openehr/v1/query/aql";

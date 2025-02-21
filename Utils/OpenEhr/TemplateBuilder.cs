@@ -15,14 +15,14 @@ public class TemplateBuilder
 
     public TemplateBuilder()
     {
-        options = !AppConstants.IsLocal ? new RestClientOptions(AppConstants.BaseUrl) : new RestClientOptions(AppConstants.BaseUrlLocal);
+        options = !OpenEhrAppConstants.IsLocal ? new RestClientOptions(OpenEhrAppConstants.BaseUrl) : new RestClientOptions(OpenEhrAppConstants.BaseUrlLocal);
         client = new RestClient(options);
         TemplateContent = "";
     }
 
     public JsonDocument GetTemplates()
     {
-        StringBuilder sb = new StringBuilder(AppConstants.OpenEhrBaseUrl);
+        StringBuilder sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
         var request = new RestRequest(sb.ToString(), Method.Get);
         request.AddHeader("Accept", "application/json");
         request.AddHeader("Prefer", "return=representation");
@@ -46,7 +46,7 @@ public class TemplateBuilder
         String location = info.FullName + templateLocation;
         String template = File.ReadAllText(location);
         template = template.Replace("{{templateName}}", templateName);
-        StringBuilder sb = new StringBuilder(AppConstants.OpenEhrBaseUrl);
+        StringBuilder sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
         var request = new RestRequest(sb.ToString(), Method.Post);
         request.AddHeader("Content-Type", "application/xml");
         request.AddHeader("Prefer", "return=representation");

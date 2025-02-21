@@ -1,6 +1,6 @@
 namespace EHRJs.Utils;
 
-public class AppConstants
+public static class OpenEhrAppConstants
 {
     public static bool IsLocal = false;
     public static readonly string AppVersion = "1.0.0";

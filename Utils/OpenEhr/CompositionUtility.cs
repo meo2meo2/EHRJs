@@ -16,16 +16,16 @@ public class CompositionUtility
 
     public CompositionUtility()
     {
-        options = !AppConstants.IsLocal ? new RestClientOptions(AppConstants.BaseUrl) : new RestClientOptions(AppConstants.BaseUrlLocal);
+        options = !OpenEhrAppConstants.IsLocal ? new RestClientOptions(OpenEhrAppConstants.BaseUrl) : new RestClientOptions(OpenEhrAppConstants.BaseUrlLocal);
         client = new RestClient(options);
         TemplateContent = "";
     }
 
     public  void GetCompositionResponse()
     {
-        var compositionOptions = AppConstants.IsLocal ?
-            AppConstants.OpenEhrBaseCompositionPostLocal.Replace("{{ehrId}}", AppConstants.EhrId) :
-            AppConstants.OpenEhrBaseCompositionPost.Replace("{{ehrId}}", AppConstants.EhrId);
+        var compositionOptions = OpenEhrAppConstants.IsLocal ?
+            OpenEhrAppConstants.OpenEhrBaseCompositionPostLocal.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId) :
+            OpenEhrAppConstants.OpenEhrBaseCompositionPost.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId);
         StringBuilder sb = new StringBuilder(compositionOptions);
         var request = new RestRequest(sb.ToString(), Method.Get);
         request.AddHeader("Accept", "application/openehr.wt+json");
@@ -48,20 +48,20 @@ public class CompositionUtility
         template.Replace("{{SYSTOLIC_VALUE}}", model.Systolic.ToString());
         template.Replace("{{DIASTOLIC_VALUE}}", model.Diastolic.ToString());
         template.Replace("{{SPO_VALUE}}", model.Spo2.ToString());
-        template.Replace("{{TEMPLATE_ID}}", AppConstants.TemplateId);
+        template.Replace("{{TEMPLATE_ID}}", OpenEhrAppConstants.TemplateId);
         template.Replace("{{DATE_TIME_VALUE}}", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ"));
         var contents = template.ToString();
 
-        var requestParms = AppConstants.IsLocal
-            ? AppConstants.OpenEhrBaseCompositionPostLocal.Replace("{{ehrId}}", AppConstants.EhrId)
-            : AppConstants.OpenEhrBaseCompositionPost.Replace("{{ehrId}}", AppConstants.EhrId);
+        var requestParms = OpenEhrAppConstants.IsLocal
+            ? OpenEhrAppConstants.OpenEhrBaseCompositionPostLocal.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId)
+            : OpenEhrAppConstants.OpenEhrBaseCompositionPost.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId);
         StringBuilder sb = new StringBuilder(requestParms);
         
         var request = new RestRequest(sb.ToString(), Method.Post);
         request.AddHeader("Content-Type", "application/xml");
         request.AddHeader("Prefer", "return=representation");
-        request.AddHeader("ehr_id", AppConstants.EhrId);
-        request.AddHeader("templateId", AppConstants.TemplateId);
+        request.AddHeader("ehr_id", OpenEhrAppConstants.EhrId);
+        request.AddHeader("templateId", OpenEhrAppConstants.TemplateId);
        
         request.AddBody(contents);
         RestResponse response = client.Execute(request);
@@ -71,9 +71,9 @@ public class CompositionUtility
 
     public bool DeleteComposition(string id)
     {
-        var compositionOptions = AppConstants.IsLocal ?
-            AppConstants.OpenEhrBaseCompositionDeleteLocal.Replace("{{ehrId}}", AppConstants.EhrId).Replace("{{composition_id}}", id) :
-            AppConstants.OpenEhrBaseCompositionDelete.Replace("{{ehrId}}", AppConstants.EhrId).Replace("{{composition_id}}", id);
+        var compositionOptions = OpenEhrAppConstants.IsLocal ?
+            OpenEhrAppConstants.OpenEhrBaseCompositionDeleteLocal.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId).Replace("{{composition_id}}", id) :
+            OpenEhrAppConstants.OpenEhrBaseCompositionDelete.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId).Replace("{{composition_id}}", id);
         StringBuilder sb = new StringBuilder(compositionOptions);
         var request = new RestRequest(sb.ToString(), Method.Delete);
         request.AddHeader("Accept", "application/json");
@@ -98,13 +98,13 @@ public class CompositionUtility
         template.Replace("{{SYSTOLIC_VALUE}}", model.Systolic.ToString());
         template.Replace("{{DIASTOLIC_VALUE}}", model.Diastolic.ToString());
         template.Replace("{{SPO_VALUE}}", model.Spo2.ToString());
-        template.Replace("{{TEMPLATE_ID}}", AppConstants.TemplateId);
+        template.Replace("{{TEMPLATE_ID}}", OpenEhrAppConstants.TemplateId);
         template.Replace("{{DATE_TIME_VALUE}}", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ"));
         var contents = template.ToString();
 
-        var requestParms = AppConstants.IsLocal
-            ? AppConstants.OpenEhrBaseCompositionUpdateLocal.Replace("{{ehrId}}", AppConstants.EhrId).Replace("{{composition_id}}", model.Uid.Split(":")[0])
-            : AppConstants.OpenEhrBaseCompositionUpdate.Replace("{{ehrId}}", AppConstants.EhrId).Replace("{{composition_id}}", model.Uid.Split(":")[0]);
+        var requestParms = OpenEhrAppConstants.IsLocal
+            ? OpenEhrAppConstants.OpenEhrBaseCompositionUpdateLocal.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId).Replace("{{composition_id}}", model.Uid.Split(":")[0])
+            : OpenEhrAppConstants.OpenEhrBaseCompositionUpdate.Replace("{{ehrId}}", OpenEhrAppConstants.EhrId).Replace("{{composition_id}}", model.Uid.Split(":")[0]);
         StringBuilder sb = new StringBuilder(requestParms);
         
         var request = new RestRequest(sb.ToString(), Method.Put);

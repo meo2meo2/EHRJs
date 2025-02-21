@@ -1,0 +1,281 @@
+﻿@{
+    ViewData["Title"] = "Vitals Sign Page";
+    var genders = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Male", Value = "Male" },
+        new SelectListItem { Text = "Female", Value = "Female" },
+        new SelectListItem { Text = "Other", Value = "Other" }
+    };
+    ViewBag.Genders = genders;
+@model FhirListModel;  
+}
+
+
+<div class="container">
+    @if (Model.isError)
+    {
+        <div class="alert alert-danger" role="alert">
+            @Model.ErrorMessage
+        </div>
+    }
+    else if (Model.isSuccess)
+    {
+        <div class="alert alert-info" role="alert">
+            @Model.SuccessMessage
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-sm-4">
+            <h2 class="bg-info">Patient Demographics Form</h2>
+            @using (Html.BeginForm("AddPatient", "Fhir", FormMethod.Post))
+            {
+                <form method="post" class="needs-validation">
+                    <div class="form-group mb-3">
+                        <label for="FirstName" class="form-label">First Name</label>
+                        <div class="input-group">
+                            <input type="text" id="FirstName" name="FirstName" class="form-control" required
+                                   placeholder="First Name"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="FirstName" class="form-label">Last Name</label>
+                        <div class="input-group">
+                            <input type="text" id="LastName" name="LastName" required
+                                    class="form-control" 
+                                   placeholder="Last Name"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="DOB" class="form-label">Date Of Birth</label>
+                        <div class="input-group">
+                            <input type="date" id="DOB" name="DOB" class="form-control" required/>
+                        </div>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="gender-update">Gender</label>
+                        @Html.DropDownList("gender", genders, new { @class="form-control", @id="gender" })
+                        <div class="invalid-feedback">
+                            Please select a Gender
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="phoneNumber" class="form-label">phoneNumber</label>
+                        <div class="input-group">
+                            <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" required/>
+                        </div>
+                    </div>
+                
+
+                    <button type="submit" class="btn btn-primary" formaction="@Url.Action("AddPatient")"
+                            formmethod="post">Submit
+                    </button>
+                </form>
+            }
+        </div>
+        <div class="col-sm-8 ">
+            <table class="table table-striped  w-auto table-responsive table-bordered">
+                <thead class="table-striped">
+                <tr>
+                    <th scope="col" class="fit">#</th>
+                    <th scope="col" class="fit">Patient ID</th>
+                    <th scope="col" class="fit">First Name</th>
+                    <th scope="col" class="fit">Last Name</th>
+                    <th scope="col" class="fit">Gender</th>
+                    <th scope="col" class="fit">Date of Birth</th>
+                    <th scope="col" class="fit">Age</th>
+                    <th scope="col" class="fit">Phone Number</th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                @if (Model.Patients != null)
+                {
+                    int i = 1;
+                    foreach (var patient in Model.Patients)
+                    {
+                        <tr>
+                            <th scope="row" class="fit">@(i++)</th>
+                            <td class="fit">
+                                @Html.ActionLink("Delete", "DeletePatient", "Fhir", new { id = patient.PatientID })
+                                <a data-id="@patient.PatientID"
+                                   data-first-name="@patient.FirstName"
+                                   data-last-name="@patient.LastName"
+                                   data-gender="@patient.Gender"
+                                   data-dob="@patient.DOB.ToString("yyyy-MM-dd")"
+                                   data-age="@patient.Age"
+                                   data-phone="@patient.PhoneNumber"
+                                   title="Edit" class="my-class" href="#">Edit</a>
+
+                            </td>
+
+                            <td class="fit"> @string.Concat(patient.FirstName.ToString(), "")</td>
+                            <td class="fit">@string.Concat(patient.LastName.ToString(), "")</td>
+                            <td class="fit"> @string.Concat(patient.Gender,"")</td>
+                            <td class="fit"> @string.Concat(patient.DOB.ToString("yyyy-MM-dd"), "")</td>
+                            <td class="fit"> @string.Concat(patient.Age.ToString(), "")</td>
+                            <td class="fit"> @string.Concat(patient.PhoneNumber.ToString(), "")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr class="no-data">
+                        <td colspan="8" style="text-align: center">No data available</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+@*
+<div class="modal fade" id="staticBackdrop2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog d-flex justify-content-center">
+        <div class="modal-content w-75">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Update Patient Information </h5>
+                <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn-close"
+                        data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form class="needs-validation" id="modal-form">
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="uuid">ID</label>
+                        <input type="text" id="uuid" class="form-control" readonly/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="fname-update">First Name</label>
+                        <input type="text" id="fname-update" name="fname-update" class="form-control" required minlength="3"/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="lname-update">Last Name</label>
+                        <input type="text" id="lname-update" name="lname-update" class="form-control" required minlength="3"/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="dob-update">Date Of Birth</label>
+                        <input type="date" id="dob-update" name="dob-update" class="form-control" required/>
+
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="gender-update">Gender</label>
+                        @Html.DropDownList("", genders, "", new {@name="gender-update", @class="form-control", @id="gender-update"})
+                    </div>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <label class="form-label" for="phone-update">Phone Number</label>
+                        <input type="text"  pattern="[0-9]{5}[-][0-9]{7}[-][0-9]{1}" id="phone-update" name="phone-update" class="form-control" required />
+                    </div>
+                    <!-- Submit button -->
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block"
+                            id="update">Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+*@
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog d-flex justify-content-center">
+        <div class="modal-content w-75">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Update Patient Information</h5>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form class="needs-validation" id="modal-form" >
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="uuid">ID</label>
+                        <input type="text" id="uuid" name="uuid" class="form-control" readonly />
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="fname-update">First Name</label>
+                        <input type="text" id="fname-update" name="fname-update" class="form-control" required minlength="3"/>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="lname-update">Last Name</label>
+                        <input type="text" id="lname-update" name="lname-update" class="form-control" required minlength="3"/>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="dob-update">Date Of Birth</label>
+                        <input type="date" id="dob-update" name="dob-update" class="form-control" max="2025-01-01" required/>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="gender-update">Gender</label>
+                        @Html.DropDownList("gender", genders, new { @class="form-control", @id="gender-update" })
+                        <div class="invalid-feedback">
+                            Please select a Gender
+                        </div>
+                        </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="phone-update">Phone Number</label>
+                        <input type="text" pattern="[0-9]{5}[-][0-9]{7}[-][0-9]{1}" id="phone-update" name="phone-update" class="form-control" required placeholder="12345-1234567-1"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $('.my-class').click(function (e) {
+            e.preventDefault();
+            $('#uuid').val($(this).data('id'));
+            $('#fname-update').val($(this).data('first-name'));
+            $('#lname-update').val($(this).data('last-name'));
+            $('#dob-update').prop("value", $(this).data('dob'));
+            $('#gender-update').val( $(this).data('gender'));
+            $('#phone-update').val($(this).data('phone'));
+            $("#staticBackdrop2").modal('toggle');
+        });
+
+        $('#update').click(function (e) {
+
+            e.preventDefault();
+            $("#modal-form").valid();
+            let formData = {
+                PatientID: $('#uuid').val(),
+                FirstName: $('#fname-update').val(),
+                LastName: $('#lname-update').val(),
+                Gender: $('#gender-update').val(),
+                DOB: $('#dob-update').val(),
+                PhoneNumber:  $('#phone-update').val()
+            }
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdatePatient", "Fhir")',
+                data:formData,
+                success: function (result) {
+                    console.log(result);
+                    $(".btn-close").click();
+                    window.location.reload();
+
+                }
+            });
+
+        });
+
+        $(".btn-close").click(function () {
+            $('#uuid').val("");
+            $('#height-update').val("");
+            $('#weight-update').val("");
+            $('#spo2-update').val("");
+            $('#systolic-update').val("");
+            $('#diastolic-update').val("");
+            $("#staticBackdrop2").modal('toggle');
+        });
+    </script>
+}

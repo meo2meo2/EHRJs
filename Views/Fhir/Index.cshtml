@@ -155,34 +155,35 @@
             }
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                @if (string.IsNullOrEmpty(Model.PreviousLink))
-                {
-                    <li class="page-item" disabled>Previous</li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        @Html.ActionLink("Previous", "PreviousPage", "Fhir", new { page = HttpUtility.UrlDecode(Model.PreviousLink) }, new { @class = "page-link" })
-                    </li>
-                }
+       
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (string.IsNullOrEmpty(Model.PreviousLink))
+                    {
+                        <li class="page-item" disabled>Previous</li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            @Html.ActionLink("Previous", "PreviousPage", "Fhir", new { page = HttpUtility.UrlDecode(Model.PreviousLink) }, new { @class = "page-link" })
+                        </li>
+                    }
 
-                @if (string.IsNullOrEmpty(Model.NextLink))
-                {
-                    <li class="page-item" disabled>Next
-                    </li>
-                }
-                else
-                {
-                    <li class="page-item">
-                        @Html.ActionLink("Next", "NextPage", "Fhir", new { page = HttpUtility.UrlDecode(Model.NextLink) }, new { @class = "page-link" })
+                    @if (string.IsNullOrEmpty(Model.NextLink))
+                    {
+                        <li class="page-item" disabled>Next
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            @Html.ActionLink("Next", "NextPage", "Fhir", new { page = HttpUtility.UrlDecode(Model.NextLink) }, new { @class = "page-link" })
 
-                    </li>
-                }
+                        </li>
+                    }
 
-            </ul>
-        </nav>
+                </ul>
+            </nav>
     </div>
 </div>
 </div>

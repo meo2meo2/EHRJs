@@ -4,7 +4,8 @@ public enum Gender
 {
     Male = 0,
     Female = 1,
-    UnKnown = 2
+    UnKnown = 2,
+    Other =3
 }
 
 public enum PageState

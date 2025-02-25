@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Interoperability Solutions";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to test either OpenEHR or Fhir implementation</p>
+<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+    
+        @Html.ActionLink("Fhir", "Index", "Fhir", "" , new {@class="form-control btn btn-primary"})
+    
+    @Html.ActionLink("OpenEHR", "Index", "Home", "", new {@class="form-control btn btn-primary"})
+</div>

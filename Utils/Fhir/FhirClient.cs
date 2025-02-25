@@ -32,8 +32,30 @@ public class FHIRUtility
         List<Patient> patients = new List<Patient>();
         var searchParam = new SearchParameter();
 
-        var bund = fhirClient.Search(new SearchParams().OrderBy("_lastUpdated", SortOrder.Descending), "Patient");
-        for (var i = 0; i < bund.Entry.Count; i++) patients.Add((Patient)bund.Entry[i].Resource);
+        Bundle? bund = null;
+        try
+        {
+            bund = fhirClient.Search(new SearchParams().OrderBy("_lastUpdated", SortOrder.Descending), "Patient");
+
+        }
+        catch (Exception e)
+        {
+            bund = fhirClient.Search(new SearchParams(), "Patient");
+
+        }
+       
+        for (var i = 0; i < bund.Entry.Count; i++)
+        {
+            try
+            {
+                patients.Add((Patient)bund.Entry[i].Resource);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
+        }
 
         if (!string.IsNullOrEmpty(bund.PreviousLink?.ToString())) before = bund.PreviousLink.ToString();
 
@@ -156,16 +178,22 @@ public class FHIRUtility
     }
 
 
+    
+    /// <summary>
+    /// To refactor
+    /// </summary>
+    /// <param name="patients"></param>
+    /// <returns></returns>
     public static List<PatientModel> GetPatientModel(List<Patient> patients)
     {
         return patients.Select(p => new PatientModel
         {
             PatientID = p.Id,
-            FirstName = p.Name.FirstOrDefault().Given.FirstOrDefault().ToString(),
-            LastName = p.Name.FirstOrDefault().Family.ToString(),
-            Gender = Enum.Parse<Gender>(p.Gender.Value.ToString()),
+            FirstName =   p.Name.FirstOrDefault().Given == null ? "" : p.Name.FirstOrDefault().Given.FirstOrDefault()?.ToString(),
+            LastName = p.Name.FirstOrDefault().Family == null ? "" : p.Name.FirstOrDefault()?.Family.ToString(),
+            Gender = Enum.Parse<Gender>(p.Gender?.ToString()),
             DOB = Convert.ToDateTime(p.BirthDate).ToString("yyyy-MM-dd"),
-            PhoneNumber = p.Telecom.FirstOrDefault(t => t.System == ContactPoint.ContactPointSystem.Phone).Value
+            PhoneNumber = p.Telecom.FirstOrDefault() == null ? "" : p.Telecom.FirstOrDefault(t => t.System == ContactPoint.ContactPointSystem.Phone)?.Value
         }).ToList();
     }
     
@@ -184,6 +212,11 @@ public class FHIRUtility
         if (searchParam == null)
         {
             searchParam = "f";
+            searchValue = "";
+        }
+
+        if (searchValue == null)
+        {
             searchValue = "";
         }
         if (searchParam.ToString().ToLower() == "p")

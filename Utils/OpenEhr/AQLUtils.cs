@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
 using EHRJs.Models;
 using Newtonsoft.Json;
 
 namespace EHRJs.Utils;
+
 public class AQLUtils
 {
     public static List<VitalsModel> GetVitalRecords(string json)
@@ -12,7 +11,7 @@ public class AQLUtils
         var vitalRecords = new List<VitalsModel>();
         foreach (var row in openEhrResponse.Rows)
         {
-            var vitalRecord = new VitalsModel()
+            var vitalRecord = new VitalsModel
             {
                 Time = row[0].ToString(),
                 Uid = row[1].ToString(),
@@ -24,9 +23,11 @@ public class AQLUtils
             };
             vitalRecords.Add(vitalRecord);
         }
+
         return vitalRecords;
     }
 }
+
 public class OpenEhrResponse
 {
     public MetaData Meta { get; set; }

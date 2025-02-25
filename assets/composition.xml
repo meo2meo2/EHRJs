@@ -1,4 +1,4 @@
-<composition archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1" xmlns:ns2="http://schemas.openehr.org/v1">
+<composition archetype_node_id="openEHR-EHR-COMPOSITION.encounter.v1">
     <name>
         <value>{{TEMPLATE_ID}}</value>
     </name>
@@ -38,7 +38,7 @@
             <code_string>433</code_string>
         </defining_code>
     </category>
-    <composer xsi:type="PARTY_IDENTIFIED" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <composer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="PARTY_IDENTIFIED">
         <name>Max Mustermann</name>
     </composer>
     <context>
@@ -61,7 +61,8 @@
             <name>Stanford University</name>
         </health_care_facility>
     </context>
-    <content xsi:type="SECTION" archetype_node_id="openEHR-EHR-SECTION.adhoc.v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <content xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SECTION"
+             archetype_node_id="openEHR-EHR-SECTION.adhoc.v1">
         <name>
             <value>Vitals Section</value>
         </name>

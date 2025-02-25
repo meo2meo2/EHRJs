@@ -11,5 +11,4 @@ public static class FhirAppConstants
     public static readonly string AppAuthorWebsiteUrl = "";
     public static readonly string LocalFhirServerLocation = "http://localhost:8080/fhir";
     public static readonly string RemoteFhirServerLocation = "https://fhir-bootcamp.medblocks.com/fhir/";
-
 }

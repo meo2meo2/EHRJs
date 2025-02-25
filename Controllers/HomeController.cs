@@ -11,7 +11,7 @@ public class HomeController(ILogger<HomeController> logger) : Controller
 
     public IActionResult Index(VitalsModel model)
     {
-        AQLBuilder builder = new AQLBuilder();
+        var builder = new AQLBuilder();
         var modelNew = builder.BuildQuery();
         modelNew.isError = model.isError;
         modelNew.ErrorMessage = model.ErrorMessage;
@@ -47,14 +47,13 @@ public class HomeController(ILogger<HomeController> logger) : Controller
         }
 
         return RedirectToAction("Index", model);
-
     }
-    
+
     [HttpPost(Name = "update")]
-    public IActionResult UpdateVitals( VitalsModel model)
+    public IActionResult UpdateVitals(VitalsModel model)
     {
         var utility = new CompositionUtility();
-        if (!utility.UpdateComposition( model))
+        if (!utility.UpdateComposition(model))
         {
             model.isError = true;
             model.ErrorMessage = "Error in updating composition";
@@ -64,21 +63,20 @@ public class HomeController(ILogger<HomeController> logger) : Controller
             model.isSuccess = true;
             model.SuccessMessage = "Composition updated successfully";
         }
+
         return RedirectToAction("Index", model);
     }
-    
+
     [HttpGet(Name = "delete")]
     public IActionResult DeleteVitals(string id)
     {
-        CompositionUtility utility = new CompositionUtility();
+        var utility = new CompositionUtility();
         utility.DeleteComposition(id);
-        return RedirectToAction("Index", new VitalsModel()
+        return RedirectToAction("Index", new VitalsModel
         {
             isSuccess = true,
             SuccessMessage = $"Composition with id = {id} deleted successfully",
             isError = false
         });
     }
-    
-    
 }

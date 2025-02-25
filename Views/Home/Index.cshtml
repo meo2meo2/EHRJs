@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Vitals Sign Page";
-@model VitalsListModel;  
+    @model VitalsListModel;  
 }
 
 
@@ -99,7 +99,7 @@
                 <tbody>
                 @if (Model.vitals != null)
                 {
-                    int i = 1;
+                    var i = 1;
                     foreach (var vitalRecord in Model.vitals)
                     {
                         <tr>
@@ -209,14 +209,14 @@
                 weight: $('#weight-update').val(),
                 spo2: $('#spo2-update').val(),
                 systolic: $('#systolic-update').val(),
-                diastolic:  $('#diastolic-update').val(),
-                bloodPressure : $('#systolic-update').val() + "/" + $('#diastolic-update').val()
-            
+                diastolic: $('#diastolic-update').val(),
+                bloodPressure: $('#systolic-update').val() + "/" + $('#diastolic-update').val()
+
             }
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("UpdateVitals", "Home")',
-                data:formData,
+                data: formData,
                 success: function (result) {
                     console.log(result);
                     $(".btn-close").click();

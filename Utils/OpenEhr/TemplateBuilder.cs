@@ -1,58 +1,55 @@
-using System.Resources;
 using System.Text;
 using System.Text.Json;
-using Newtonsoft.Json;
 using RestSharp;
 
 namespace EHRJs.Utils;
 
 public class TemplateBuilder
 {
-    private RestClient client;
-    private RestClientOptions options;
-    public readonly String templateLocation = "/assets/template.xml";
-    public string TemplateContent { get; private set; }
+    public readonly string templateLocation = "/assets/template.xml";
+    private readonly RestClient client;
+    private readonly RestClientOptions options;
 
     public TemplateBuilder()
     {
-        options = !OpenEhrAppConstants.IsLocal ? new RestClientOptions(OpenEhrAppConstants.BaseUrl) : new RestClientOptions(OpenEhrAppConstants.BaseUrlLocal);
+        options = !OpenEhrAppConstants.IsLocal
+            ? new RestClientOptions(OpenEhrAppConstants.BaseUrl)
+            : new RestClientOptions(OpenEhrAppConstants.BaseUrlLocal);
         client = new RestClient(options);
         TemplateContent = "";
     }
 
+    public string TemplateContent { get; private set; }
+
     public JsonDocument GetTemplates()
     {
-        StringBuilder sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
-        var request = new RestRequest(sb.ToString(), Method.Get);
+        var sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
+        var request = new RestRequest(sb.ToString());
         request.AddHeader("Accept", "application/json");
         request.AddHeader("Prefer", "return=representation");
-        RestResponse response = client.Execute(request);
+        var response = client.Execute(request);
 
-        return JsonDocument.Parse(response.Content.ToString());
-
-
+        return JsonDocument.Parse(response.Content);
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="content"></param>
     /// <param name="templateName"></param>
     /// <returns></returns>
-    
-    public String BuildTemplate(string content, string templateName = "test-template")
+    public string BuildTemplate(string content, string templateName = "test-template")
     {
-        DirectoryInfo info = new DirectoryInfo(Environment.CurrentDirectory);
-        String location = info.FullName + templateLocation;
-        String template = File.ReadAllText(location);
+        var info = new DirectoryInfo(Environment.CurrentDirectory);
+        var location = info.FullName + templateLocation;
+        var template = File.ReadAllText(location);
         template = template.Replace("{{templateName}}", templateName);
-        StringBuilder sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
+        var sb = new StringBuilder(OpenEhrAppConstants.OpenEhrBaseUrl);
         var request = new RestRequest(sb.ToString(), Method.Post);
         request.AddHeader("Content-Type", "application/xml");
         request.AddHeader("Prefer", "return=representation");
         request.AddBody(template);
-        RestResponse response = client.Execute(request);
-        TemplateContent = response.Content.ToString();
+        var response = client.Execute(request);
+        TemplateContent = response.Content;
         return content;
     }
 }
